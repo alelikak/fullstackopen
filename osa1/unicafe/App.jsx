@@ -8,19 +8,19 @@ const Button = (props) => (
   </button>
 )
 const StatisticsLine = (props) => (
-  <div>{props.text+props.value}</div>
+  <tr><td>{props.text}</td><td>{props.value}</td></tr>
 )
 
 const Statistics = (props) => {  
   if (props.good === 0 && props.bad === 0 && props.neutral === 0) 
   {    return (<div> {"No feedback given" }</div>)  }  
-  return (<div><StatisticsLine text="good " value={props.good} />
+  return (<div><table><tbody><StatisticsLine text="good " value={props.good} />
   <StatisticsLine text="bad " value={props.bad} />
   <StatisticsLine text="neutral " value={props.neutral} />
   <StatisticsLine text="average " value={(props.good*1-props.bad*1+props.neutral*0)/(props.good+props.bad+props.neutral)} />
   <StatisticsLine text="positive " value={(props.good)/(props.good+props.bad+props.neutral)*100+" %"} />
  
-  </div>)}
+  </tbody></table></div>)}
 
   
   
