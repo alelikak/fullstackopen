@@ -1,11 +1,5 @@
 import { useState } from 'react'
 
-const DisplayGood = props => <div>{"good "+props.good}</div>
-const DisplayBad = props => <div>{"bad "+props.bad}</div>
-const DisplayNeutral = props => <div>{"neutral "+props.neutral}</div>
-const DisplayTotal = props =>  <div>{"all "+(props.good+props.bad+props.neutral)}</div>
-const DisplayAverage = props =>  <div>{"average "+(props.good*1-props.bad*1+props.neutral*0)/(props.good+props.bad+props.neutral)}</div>
-const DisplayPositive = props =>  <div>{"positive "+(props.good)/(props.good+props.bad+props.neutral)*100+" %"}</div>
 
 
 const Button = (props) => (
@@ -15,6 +9,14 @@ const Button = (props) => (
 )
 
 
+
+const Statistics = (props) =>  
+<div>{"good "+props.good}
+<div>{"bad "+props.bad}</div>
+<div>{"neutral "+props.neutral}</div>
+<div>{"all "+(props.good+props.bad+props.neutral)}</div>
+<div>{"average "+(props.good*1-props.bad*1+props.neutral*0)/(props.good+props.bad+props.neutral)}</div>
+{"positive "+(props.good)/(props.good+props.bad+props.neutral)*100+" %"}</div>
 
 
 const App = () => {
@@ -36,12 +38,8 @@ const App = () => {
       <h2>
       <p>{"statistics"} </p>
       </h2>
-      <DisplayGood good={good} />
-      <DisplayNeutral neutral={neutral} />
-      <DisplayBad bad={bad} />
-      <DisplayTotal bad={bad} good={good} neutral={neutral} />
-      <DisplayAverage bad={bad} good={good} neutral={neutral} />
-      <DisplayPositive bad={bad} good={good} neutral={neutral} />
+      <Statistics good={good} bad={bad} neutral={neutral}  />
+      
     </div>
 
   )
