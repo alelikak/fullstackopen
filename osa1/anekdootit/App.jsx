@@ -38,16 +38,23 @@ const App = () => {
     setPoints(copy)
     
     }
-    
+    const max = points.indexOf(Math.max(...points));// https://devsheet.com/highlight-the-highest-value-list-item-using-react/
   return (
     <div>
+      <h2> {'Anecdote of the day'}</h2>
+      {anecdotes[selected]}
+      <div> {'voted '+points[selected]+' times'} </div>
       
-      <p> {anecdotes[selected]} </p>
-      <p> {'voted '+points[selected]+' times'} </p>
 
       
       <Button handleClick={() => setSelected(randomNumberInRange(0, 7)) } text="next anecdote" /> 
       <Button handleClick={handleClick} text="vote" /> 
+      <h2> {'Anecdote with  most votes'}</h2>
+      
+       {anecdotes[max]} 
+      <div> {'has '+points[max]+' votes'} </div>
+      
+     
       
       
     </div>
