@@ -27,17 +27,29 @@ const App = () => {
     'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when dianosing patients.',
     'The only way to go fast, is to go well.'
   ]
+  //const points = new Array(10+1).join('0').split('').map(parseFloat)
    
   const [selected, setSelected] = useState(0)
-
-  
-
+  const [points, setPoints] = useState(new Array(10+1).join('0').split('').map(parseFloat))
+  //points =new Array(10+1).join('0').split('').map(parseFloat) //https://stackoverflow.com/questions/20222501/how-to-create-a-zero-filled-javascript-array-of-arbitrary-length/22209781
+  const handleClick = () => {    
+    const copy = [...points] 
+    copy[selected] += 1 
+    setPoints(copy)
+    
+    }
+    
   return (
     <div>
       
       <p> {anecdotes[selected]} </p>
+      <p> {'voted '+points[selected]+' times'} </p>
+
       
       <Button handleClick={() => setSelected(randomNumberInRange(0, 7)) } text="next anecdote" /> 
+      <Button handleClick={handleClick} text="vote" /> 
+      
+      
     </div>
 
   )
