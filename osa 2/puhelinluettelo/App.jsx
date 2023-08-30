@@ -18,11 +18,15 @@ const App = () => {
       important: Math.random() > 0.5,
       id: persons.length + 1,
     }
-  
+   
+    //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some
+    const check = (element) => element.name === newNote;
+    persons.some(check) ? window.alert(`${newNote} is already added to phonebook`) :
     setPersons(persons.concat(personObject))
     setNewNote('')
   }
 
+  
   const personsToShow = showAll    ? persons    : persons.filter(person => person.important === true)
   const handleNoteChange = (event) => {    console.log(event.target.value)    
     setNewNote(event.target.value)  }
