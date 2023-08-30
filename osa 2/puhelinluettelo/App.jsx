@@ -35,7 +35,7 @@ const App = () => {
 
   
   const personsToShow = showAll    ? persons    : persons.filter(person => person.important === true)
-  const personsToShow2 = newFilter    ? persons.filter(person => person.name.toLowerCase().includes(newFilter)):persons
+  const personsToShow2 = newFilter    ? persons.filter(person => person.name.toLowerCase().includes(newFilter.toLowerCase())):persons
    //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes
    //https://stackoverflow.com/questions/48979908/react-filter-function-case-insensitive
   
