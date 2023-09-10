@@ -3,6 +3,17 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import noteService from './notes'
 
+const Notification = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div className="alert">
+      {message}
+    </div>
+  )
+}
 
 const Filter = (props) => {
   return (
@@ -34,13 +45,24 @@ const Persons = (props) => {
        
    
     
-<div>{props.personsToShow.map(person => <li key={person.name}>  <p>{person.name}{" "} {person.number}{" "} <button onClick={() => {if(window.confirm(`Delete ${person.name} ?`)){axios.delete(`${baseUrl}/${person.id}`)};}}>delete</button></p> </li>)} </div>
+<div>{props.personsToShow.map(person => <li className='person' key={person.name}>  <p>{person.name}{" "} {person.number}{" "} <button onClick={() => {if(window.confirm(`Delete ${person.name} ?`)){axios.delete(`${baseUrl}/${person.id}`)
+    .catch(error => {setAlertMessage( `Deleted '${newNote}' `)       
+    setTimeout(() => {setAlertMessage(null)}, 5000)})
+    
+
+       
+
+
+};}}>delete</button></p> </li>)} </div>
 //Source https://stackoverflow.com/questions/52034868/confirm-window-in-react
 )
 }
 
+
+
+
 const App = () => {
-  
+  const [alertMessage, setAlertMessage] = useState(null)
   const [persons, setPersons] = useState([  ])
 
   const [newFilter, setNewFilter] = useState('')
@@ -72,22 +94,43 @@ const App = () => {
       important: Math.random() > 0.5,
       id: persons.length + 1,
     }
-  
+    
+    
     const check = (element) => element.name === newNote;
-    persons.some(check) ? window.alert(`${newNote} is already added to phonebook, replace the old one with a new one?`)
+
     
-    //const existingperson = persons.find(n => n.name === newNote)
-    //const updatePersonObject = {
-     // name: newNote,
-      //number:newNumber,
-      //important: Math.random() > 0.5,
-      //id: existingperson.id,
-    //}
-    //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some
+
+    const note =persons.find(person => person.name === newNote)
+    if (note) {
+      
+      
     
-    :
+   
+    if(window.confirm(`${newNote} is already added to phonebook, replace the old one with a new one?`))
+    {
     
-    
+    const newObject = {
+      name: note.name,
+      number:newNumber,
+      important: note.important,
+      id: note.id,
+    }
+    console.log(newObject)
+
+    noteService
+       .update(note.id, newObject).then(returnedNote => {
+         setPersons(persons.map(person => person.id !== id ? person : returnedNote))
+       }).catch(error => {setAlertMessage( `Updated '${newNote}' `)       
+       setTimeout(() => {setAlertMessage(null)}, 5000)})
+       //Source https://fullstackopen.com/osa2/tyylien_lisaaminen_react_sovellukseen
+       setNewNote('')
+       setNewNumber('')
+      }
+  
+}
+  else
+  { 
+
     setPersons(persons.concat(personObject))
     setNewNote('')
     setNewNumber('')
@@ -95,11 +138,19 @@ const App = () => {
     
     
        noteService.create(personObject).then(response => {setPersons(persons.concat(response.data)) 
-        setNewNote('')})
+        setNewNote('')}).catch(error => {setAlertMessage( `Added '${newNote}' `)       
+         setTimeout(() => {setAlertMessage(null)}, 5000)})
 
-        const note = persons.find(person => personObject.id === id)
-        noteService.update(personObject.id, note).then(response => 
-       {setPersons(persons.map(person => person.name !== personObject.name ? person : response.data))})
+  }
+
+    
+           
+    
+    
+
+
+        
+
 
   }
 
@@ -133,6 +184,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={alertMessage} />
       <Filter filter= {newFilter} eventhandler= {handleFilterChange}/>
 
 
