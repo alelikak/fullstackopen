@@ -87,14 +87,23 @@ const App = () => {
 
   const addPerson = (event) => {
     event.preventDefault()
+    const arr = persons.map(person=>person.id);
+    const max = arr.reduce((a, b) => Math.max(a, b), -Infinity);
+    //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/max
+    console.log(max)
+    //Poistettaessa puh.nroita listan ensimmaisen henkilon id saattaa olla yhta suuri kuin lisattavan henkilon id, jolloin ohjelma ei lisaa henkiloa, jos kaytetaan kurssimateriaalin persons.length + 1 id:na
     
     const personObject = {
       name: newNote,
       number:newNumber,
       important: Math.random() > 0.5,
-      id: persons.length + 1,
+      id: max + 1,
     }
-    
+  
+
+    //if (persons[0].id!=1 && persons.length>0) {
+    //  personObject.id=personObject.id+1
+    //}
     
     const check = (element) => element.name === newNote;
 
@@ -125,12 +134,14 @@ const App = () => {
        //Source https://fullstackopen.com/osa2/tyylien_lisaaminen_react_sovellukseen
        setNewNote('')
        setNewNumber('')
+      }else
+      {// window confirm cancel 
       }
   
 }
   else
-  { 
-
+  {
+    console.log('Create new name',personObject,'persons.length ', persons.length)
     setPersons(persons.concat(personObject))
     setNewNote('')
     setNewNumber('')
@@ -140,6 +151,9 @@ const App = () => {
        noteService.create(personObject).then(response => {setPersons(persons.concat(response.data)) 
         setNewNote('')}).catch(error => {setAlertMessage( `Added '${newNote}' `)       
          setTimeout(() => {setAlertMessage(null)}, 5000)})
+
+
+         
 
   }
 
