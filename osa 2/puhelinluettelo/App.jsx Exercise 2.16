@@ -45,9 +45,10 @@ const Persons = (props) => {
        
    
     
-<div>{props.personsToShow.map(person => <li className='person' key={person.name}>  <p>{person.name}{" "} {person.number}{" "} <button onClick={() => {if(window.confirm(`Delete ${person.name} ?`)){axios.delete(`${baseUrl}/${person.id}`)
-    .catch(error => {setAlertMessage( `Deleted '${newNote}' `)       
+<div>{props.personsToShow.map(person => <li className='person' key={person.name}>  <p>{person.name}{" "} {person.number}{" "} <button onClick={() => {if(window.confirm(`Delete ${person.name} ?`)){axios.delete(`${baseUrl}/${person.id}`).then(response => {})
+    .catch(alert => {setAlertMessage( `Deleted '${person.name}' `)       
     setTimeout(() => {setAlertMessage(null)}, 5000)})
+    
     
 
        
@@ -77,7 +78,9 @@ const App = () => {
      
      if (window.confirm('Delete', this.props.name, '?')) {
       
-      noteService.poista(this.props.id).then(response => {})
+      noteService.poista(this.props.id).then(response => {}).catch(error => {setAlertMessage( `Deleted '${this.props.name}' `)       
+      setTimeout(() => {setAlertMessage(null)}, 9000)})
+      console.log('deletePerson eventtia kutsuttiin')
     }
     
    
@@ -129,7 +132,7 @@ const App = () => {
     noteService
        .update(note.id, newObject).then(returnedNote => {
          setPersons(persons.map(person => person.id !== id ? person : returnedNote))
-       }).catch(error => {setAlertMessage( `Updated '${newNote}' `)       
+       }).catch(alert => {setAlertMessage( `Updated '${newNote}' `)       
        setTimeout(() => {setAlertMessage(null)}, 5000)})
        //Source https://fullstackopen.com/osa2/tyylien_lisaaminen_react_sovellukseen
        setNewNote('')
@@ -148,8 +151,7 @@ const App = () => {
     
     
     
-       noteService.create(personObject).then(response => {setPersons(persons.concat(response.data)) 
-        setNewNote('')}).catch(error => {setAlertMessage( `Added '${newNote}' `)       
+       noteService.create(personObject).then(response => {}).catch(alert => {setAlertMessage( `Added '${personObject.name}' `)       
          setTimeout(() => {setAlertMessage(null)}, 5000)})
 
 
