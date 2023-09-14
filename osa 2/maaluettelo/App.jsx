@@ -3,6 +3,9 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import noteService from './notes'
 
+
+const api_key = import.meta.env.VITE_SOME_KEY
+console.log(api_key)
 const Notification = ({ message }) => {
   if (message === null) {
     return null
@@ -78,8 +81,12 @@ const [value, setValue] = useState('')
 const [flag, setFlag] = useState()
 const [area, setArea] = useState()
 const [capital, setCapital] = useState({})
+
 const [languages, setLanguages] = useState({})
 const [country, setCountry] = useState(null)
+const [temperature, setTemperature] = useState()
+const [wind, setWind] = useState()
+const [icon, setIcon] = useState('10n')
 
 
   const deletePerson = (event) => {
@@ -187,7 +194,7 @@ const [country, setCountry] = useState(null)
   useEffect(() => {    
     console.log('effect') 
   if (country) {   
-
+  
     axios
       .get(`https://studies.cs.helsinki.fi/restcountries/api/name/${country}`)
       .then(response => {
@@ -197,13 +204,26 @@ const [country, setCountry] = useState(null)
         setLanguages(response.data.languages)
         console.log('capital ',capital) 
         console.log('languages ',languages) 
-
+        
       
       })
-
+      //api.openweathermap.org/data/2.5/forecast?id=524901&appid={API key}
       
-      console.log('response',languages[0]) 
-      console.log('response.data',languages) 
+     
+
+      //capital palauttaa urlissa Object object eika vaadittua stringia
+      axios
+      .get(`http://api.openweathermap.org/data/2.5/weather?q=${capital[0]}&units=metric&APPID=${api_key}`)  //Source https://stackoverflow.com/questions/32022699/how-to-use-openweathermap-api-for-javascript
+      .then(response => {
+        setTemperature(response.data.main.temp)
+        setWind(response.data.wind.speed)
+        setIcon(response.data.weather[0].icon)
+        console.log('weather wind',response.data.wind.speed) 
+        console.log('temperature',response.data.main.temp) 
+        console.log('icon',response.data.weather[0].icon) 
+      })
+      //https://stackoverflow.com/questions/44177417/how-to-display-openweathermap-weather-icon
+      //https://stackoverflow.com/questions/37759473/temperature-conversion-with-openweathermap-api
 
   axios.get('http://localhost:3001/persons').then(response => {
     console.log('promise fulfilled')        
@@ -266,6 +286,8 @@ const [country, setCountry] = useState(null)
       <h2>  </h2>  
 
       <h4>Capital </h4>
+
+      
         {Object.keys(capital).map((key, i) => (
         <p key={i}>
           {capital[key]}
@@ -284,12 +306,29 @@ const [country, setCountry] = useState(null)
         <h4>Flag </h4>
           {flag}
       
+          <h2>Weather in {capital[0]} </h2>  
+          <p>temperature  {temperature} Celsius</p>
+          <div>
+    <img 
+    id="wicon" 
+    src={`http://openweathermap.org/img/wn/${icon}@2x.png`}
+    alt="">
+    </img>
+</div>
+
+          <p> wind {wind} ms </p>
+         
+          
       </pre>
       
-      
         </div>
-        //Source: https://stackoverflow.com/questions/67368432/how-to-map-json-data-in-react-js
+        
+        // Source https://stackoverflow.com/questions/42475681/using-openweather-json-api-how-to-fetch-the-temperature
       
+        //Source: https://stackoverflow.com/questions/67368432/how-to-map-json-data-in-react-js
+       
+        
+
     
   )
 
