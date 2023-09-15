@@ -62,6 +62,13 @@ const Persons = (props) => {
 )
 }
 
+const Countries = (props) => {
+  
+  return (    
+<div>{props.countriesToShow.map(country => <li className='country' key={country}>  <p>{country}</p> </li>)} </div>
+)
+}
+
 
 
 
@@ -86,6 +93,7 @@ const [languages, setLanguages] = useState({})
 const [country, setCountry] = useState(null)
 const [temperature, setTemperature] = useState()
 const [wind, setWind] = useState()
+const [array, setArray] = useState([])
 const [icon, setIcon] = useState('10n')
 
 
@@ -195,6 +203,21 @@ const [icon, setIcon] = useState('10n')
     console.log('effect') 
   if (country) {   
   
+
+    axios
+      .get(`https://studies.cs.helsinki.fi/restcountries/api/all`)
+      .then(response => {
+        
+        setArray(response.data)
+        console.log('array of countries',array) 
+        const arr = array.map(country=>country.name.common);
+        console.log('arr',arr) 
+        setArray(arr)
+        console.log('array of countries',array) 
+      })
+
+
+      
     axios
       .get(`https://studies.cs.helsinki.fi/restcountries/api/name/${country}`)
       .then(response => {
@@ -270,7 +293,8 @@ const [icon, setIcon] = useState('10n')
       setCountry(value)
     }
      
-    
+    const countriesToShow = newFilter    ? array.filter(country => country.toLowerCase().includes(newFilter.toLowerCase())):array
+  
 
   return (
     <div>
@@ -284,7 +308,8 @@ const [icon, setIcon] = useState('10n')
 
       <pre>
       <h2>  </h2>  
-
+      <Filter filter= {newFilter} eventhandler= {handleFilterChange}/>
+      <Countries countriesToShow={countriesToShow}   />
       <h4>Capital </h4>
 
       
