@@ -62,12 +62,6 @@ const Persons = (props) => {
 )
 }
 
-const Countries = (props) => {
-  
-  return (    
-<div>{props.countriesToShow.map(country => <li className='country' key={country}>  <p>{country}</p> </li>)} </div>
-)
-}
 
 
 
@@ -94,6 +88,7 @@ const [country, setCountry] = useState(null)
 const [temperature, setTemperature] = useState()
 const [wind, setWind] = useState()
 const [array, setArray] = useState([])
+const [hakuarray, setHakuarray] = useState([])
 const [icon, setIcon] = useState('10n')
 
 
@@ -207,13 +202,15 @@ const [icon, setIcon] = useState('10n')
     axios
       .get(`https://studies.cs.helsinki.fi/restcountries/api/all`)
       .then(response => {
-        
-        setArray(response.data)
-        console.log('array of countries',array) 
-        const arr = array.map(country=>country.name.common);
-        console.log('arr',arr) 
-        setArray(arr)
-        console.log('array of countries',array) 
+        console.log('response.data[0].name.common',response.data[0].name.common) 
+        const arr  = response.data
+        const arr2 = arr.map(country2=>country2.name.common)
+        console.log('array of countries',arr2) 
+        const arr3 = array.splice(0);  // Source: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice
+        setArray(arr3)
+        setArray(array.concat(arr2))
+       
+       console.log('array' ,array) 
       })
 
 
@@ -269,6 +266,24 @@ const [icon, setIcon] = useState('10n')
 
     const handleChange = (event) => {
       setValue(event.target.value)
+      setCountry(event.target.value)
+      console.log('hakuarray ',hakuarray) 
+      console.log('hakuarray length ',hakuarray.length) 
+      console.log('hakuarray.at(0) ',hakuarray.at(0)) 
+      
+      const arr4 = hakuarray.splice(0);  // Source: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice
+    
+      setHakuarray(arr4)
+      setHakuarray(hakuarray.concat(array.filter((item) => item.toLowerCase().includes(country.toLowerCase()))))
+      if(hakuarray.length===1)
+      {
+
+         setCountry(hakuarray.at(0))
+         console.log('countryksi asetettu ',country) 
+    
+        }
+      
+      //setCountry(array.filter((item) => item.toLowerCase().includes(country.toLowerCase()))[0])
       
 //axios
       //.get(`https://studies.cs.helsinki.fi/restcountries/api/all`)
@@ -290,11 +305,10 @@ const [icon, setIcon] = useState('10n')
   
     const onSearch = (event) => {
       event.preventDefault()
-      setCountry(value)
+      setCountry(value) 
     }
-     
-    const countriesToShow = newFilter    ? array.filter(country => country.toLowerCase().includes(newFilter.toLowerCase())):array
-  
+    
+    // SetCountry pitaisi kutsua vaan silloin kun loydettyjen maiden listan pituus on 1.
 
   return (
     <div>
@@ -307,9 +321,13 @@ const [icon, setIcon] = useState('10n')
 
 
       <pre>
-      <h2>  </h2>  
-      <Filter filter= {newFilter} eventhandler= {handleFilterChange}/>
-      <Countries countriesToShow={countriesToShow}   />
+      
+      <p>{array.filter((item) => item.toLowerCase().includes(country.toLowerCase())).join('\n')}</p>   
+
+
+
+      
+     
       <h4>Capital </h4>
 
       
@@ -348,9 +366,10 @@ const [icon, setIcon] = useState('10n')
       
         </div>
         
-        // Source https://stackoverflow.com/questions/42475681/using-openweather-json-api-how-to-fetch-the-temperature
-      
-        //Source: https://stackoverflow.com/questions/67368432/how-to-map-json-data-in-react-js
+        // Source: https://stackoverflow.com/questions/42475681/using-openweather-json-api-how-to-fetch-the-temperature
+        // Source: https://stackoverflow.com/questions/67368432/how-to-map-json-data-in-react-js
+        // Source: https://stackoverflow.com/questions/50229792/adding-a-new-line-in-a-jsx-string-inside-a-paragraph-react
+        
        
         
 
