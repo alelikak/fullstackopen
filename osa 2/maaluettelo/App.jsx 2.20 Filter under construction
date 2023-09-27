@@ -6,6 +6,8 @@ import noteService from './notes'
 
 const api_key = import.meta.env.VITE_SOME_KEY
 console.log(api_key)
+
+
 const Notification = ({ message }) => {
   if (message === null) {
     return null
@@ -65,7 +67,7 @@ const Persons = (props) => {
 
 
 
-
+//https://stackoverflow.com/questions/46592833/how-to-use-switch-statement-inside-a-react-component
 const App = () => {
   const [alertMessage, setAlertMessage] = useState(null)
   const [persons, setPersons] = useState([  ])
@@ -124,9 +126,7 @@ const [icon, setIcon] = useState('10n')
     }
   
 
-    //if (persons[0].id!=1 && persons.length>0) {
-    //  personObject.id=personObject.id+1
-    //}
+    
     
     const check = (element) => element.name === newNote;
 
@@ -222,8 +222,10 @@ const [icon, setIcon] = useState('10n')
         setArea(response.data.area)
         setCapital(response.data.capital)
         setLanguages(response.data.languages)
-        console.log('capital ',capital) 
-        console.log('languages ',languages) 
+        
+
+        console.log('capital AXIOSin getissa ',capital) 
+        console.log('languages AXIOSin getissa',languages) 
         
       
       })
@@ -234,7 +236,7 @@ const [icon, setIcon] = useState('10n')
       //capital palauttaa urlissa Object object eika vaadittua stringia
       axios
       .get(`http://api.openweathermap.org/data/2.5/weather?q=${capital[0]}&units=metric&APPID=${api_key}`)  //Source https://stackoverflow.com/questions/32022699/how-to-use-openweathermap-api-for-javascript
-      .then(response => {
+      .then(response => {    
         setTemperature(response.data.main.temp)
         setWind(response.data.wind.speed)
         setIcon(response.data.weather[0].icon)
@@ -248,7 +250,7 @@ const [icon, setIcon] = useState('10n')
   axios.get('http://localhost:3001/persons').then(response => {
     console.log('promise fulfilled')        
   setPersons(response.data)      })  }}, [country])  
-  console.log('render', persons.length, 'notes')
+ 
 
 
 
@@ -266,6 +268,9 @@ const [icon, setIcon] = useState('10n')
 
     const handleChange = (event) => {
       setValue(event.target.value)
+           
+      if(event.target.value=== '' )
+      console.log('OLEOLE') 
       setCountry(event.target.value)
       console.log('hakuarray ',hakuarray) 
       console.log('hakuarray length ',hakuarray.length) 
@@ -282,20 +287,9 @@ const [icon, setIcon] = useState('10n')
          console.log('countryksi asetettu ',country) 
     
         }
-      
-      //setCountry(array.filter((item) => item.toLowerCase().includes(country.toLowerCase()))[0])
-      
-//axios
-      //.get(`https://studies.cs.helsinki.fi/restcountries/api/all`)
-      //.then(response => {
         
-        //setCountry(response.data.name.common)
-        //console.log('country ',country) 
-
       
-      //})
-      //const countriesToShow = newFilter    ? response.data.filter(country => country.name.toLowerCase().includes(newFilter.toLowerCase())):null
-      //console.log(countriesToShow) 
+
       
 
       //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes
@@ -309,61 +303,86 @@ const [icon, setIcon] = useState('10n')
     }
     
     // SetCountry pitaisi kutsua vaan silloin kun loydettyjen maiden listan pituus on 1.
+    
 
   return (
     <div>
       
-
+      
       <form onSubmit={onSearch}>
         find countries <input value={value} onChange={handleChange} />
-        <button type="submit">language</button>
+       
       </form>
 
 
-      <pre>
       
-      <p>{array.filter((item) => item.toLowerCase().includes(country.toLowerCase())).join('\n')}</p>   
+      {
+      (country ==='') ?
+      <div >
+        {''}
+      </div>
+    : ( (hakuarray.length === 1)  ?
+    
+    <div >
+    {''}
+    <h4>Capital </h4>
 
-
-
+  
+    {Object.keys(capital).map((key, i) => (
+    <p key={i}>
+      {capital[key]}
+    </p>))}
+  <h4>Area </h4>
+  
+      {area}
+    
+  <h2>Languages</h2>
+  
+    {Object.keys(languages).map((key, i) => (
+    <p key={i}>
+      {languages[key]}
+    </p>))}
+    
+    <h4>Flag </h4>
+      {flag}
       
      
-      <h4>Capital </h4>
+      <h2>Weather in {capital[0]} </h2>  
+      {console.log('capital[0]',capital[0]) }
+      <p>temperature  {temperature} Celsius</p>
+      {console.log('temperature',temperature) }
+      <div>
+<img 
+id="wicon" 
 
-      
-        {Object.keys(capital).map((key, i) => (
-        <p key={i}>
-          {capital[key]}
-        </p>))}
-      <h4>Area </h4>
-      
-          {area}
-        
-      <h2>Languages</h2>
-    
-        {Object.keys(languages).map((key, i) => (
-        <p key={i}>
-          {languages[key]}
-        </p>))}
-        
-        <h4>Flag </h4>
-          {flag}
-      
-          <h2>Weather in {capital[0]} </h2>  
-          <p>temperature  {temperature} Celsius</p>
-          <div>
-    <img 
-    id="wicon" 
-    src={`http://openweathermap.org/img/wn/${icon}@2x.png`}
-    alt="">
-    </img>
+src={`http://openweathermap.org/img/wn/${icon}@2x.png`}
+alt="">
+</img>
 </div>
 
-          <p> wind {wind} ms </p>
-         
-          
-      </pre>
+      <p> wind {wind} ms </p>
+     
       
+  
+  </div>
+    :
+    ((hakuarray.length > 10) ?
+      
+       <div >
+         {'Too many matches, specify another filter'}
+       </div>
+     
+     :  ((hakuarray.length <= 10  && hakuarray.length > 1) ?
+      //Source: https://stackoverflow.com/questions/53300748/map-a-filtered-array-in-react
+      <div>
+        {array.filter((item) => item.toLowerCase().includes(country.toLowerCase()) )
+      .map(country2 => <li  key={country2}>  {country2}{" "}<button onClick={() => {setCountry(country2); setHakuarray([country2])}}>show</button> </li>)}
+      </div>
+      :
+      <div>
+      {}
+    </div>
+      )))}
         </div>
         
         // Source: https://stackoverflow.com/questions/42475681/using-openweather-json-api-how-to-fetch-the-temperature
