@@ -1,4 +1,4 @@
- //VITE_KEY=ee3d53d6d52a05cb2fb2824cd6e42eac npm run dev
+ 
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 
@@ -17,6 +17,7 @@ const [capital, setCapital] = useState({})
 
 const [languages, setLanguages] = useState({})
 const [country, setCountry] = useState(null)
+const [lastcountry, setLastCountry] = useState(null)
 const [temperature, setTemperature] = useState()
 const [wind, setWind] = useState()
 const [array, setArray] = useState([])// We need a table for all country names in hakuarray, so that we can compare the search tab string to them
@@ -67,7 +68,7 @@ useEffect(() => {
       })
       //api.openweathermap.org/data/2.5/forecast?id=524901&appid={API key}
       
-     
+     //BUG: For some reason wind, temperature and icon is shown when searching for second time the desired country, not the first time, Toni Lelikakis, Finland 15:29 28.9.2023
 
       axios
       .get(`http://api.openweathermap.org/data/2.5/weather?q=${capital[0]}&units=metric&APPID=${api_key}`)  //Source https://stackoverflow.com/questions/32022699/how-to-use-openweathermap-api-for-javascript
@@ -75,6 +76,7 @@ useEffect(() => {
         setTemperature(response.data.main.temp)
         setWind(response.data.wind.speed)
         setIcon(response.data.weather[0].icon)
+        setLastCountry(country)
         console.log('weather wind',response.data.wind.speed) 
         console.log('temperature',response.data.main.temp) 
         console.log('icon',response.data.weather[0].icon) 
@@ -92,8 +94,10 @@ useEffect(() => {
       setValue(event.target.value)
            
       if(event.target.value=== '' )
-      console.log('OLEOLE') 
+      console.log('OLEOLE')
+      
       setCountry(event.target.value)// Onko ylimaarainen
+  
       console.log('hakuarray ',hakuarray) 
       console.log('hakuarray length ',hakuarray.length) 
       console.log('hakuarray.at(0) ',hakuarray.at(0)) 
@@ -106,6 +110,7 @@ useEffect(() => {
       {
 
          setCountry(hakuarray.at(0))
+         
          console.log('countryksi asetettu ',country) 
     
         }
@@ -140,33 +145,30 @@ useEffect(() => {
       <div >
         {''}
       </div>
-    : ( (hakuarray.length === 1)  ?
+    : ( (hakuarray.length === 1 )  ?
     
     <div >
-    {''}
-    <h4>Capital </h4>
+    <h2>{lastcountry}</h2>
+    
+
+    <p>Capital {capital[0]}</p>
 
   
-    {Object.keys(capital).map((key, i) => (
-    <p key={i}>
-      {capital[key]}
-    </p>))
     
-    
-    }
-  <h4>Area </h4>
+
+  <p>Area {area}</p>
   
-      {area}
+      
     
-  <h2>Languages</h2>
+  <h4>Languages</h4>
   
     {Object.keys(languages).map((key, i) => (
-    <p key={i}>
+    <ul><li key={i}>
       {languages[key]}
-    </p>))}
+    </li></ul>))}
     
     <h4>Flag </h4>
-      {flag}
+      {flag }
       <h2>Weather in {capital[0]} </h2>  
       {console.log('capital[0]',capital[0]) }
       <p>temperature  {temperature} Celsius</p>
