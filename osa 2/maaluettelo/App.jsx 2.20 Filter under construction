@@ -4,8 +4,8 @@ import axios from 'axios'
 
 
 
-const api_key = import.meta.env.VITE_SOME_KEY
-console.log(api_key)
+const api_key = import.meta.env.VITE_KEY
+console.log('api_key',api_key)
 
 
 const App = () => {
@@ -19,7 +19,7 @@ const [languages, setLanguages] = useState({})
 const [country, setCountry] = useState(null)
 const [temperature, setTemperature] = useState()
 const [wind, setWind] = useState()
-const [array, setArray] = useState([])
+const [array, setArray] = useState([])// We need a table for all country names in hakuarray, so that we can compare the search tab string to them
 const [hakuarray, setHakuarray] = useState([])
 const [icon, setIcon] = useState('10n')
 
@@ -32,20 +32,24 @@ useEffect(() => {
       .then(response => {
         console.log('response.data[0].name.common',response.data[0].name.common) 
         const arr  = response.data
-        const arr2 = arr.map(country2=>country2.name.common)
+       
+        const arr4 = arr.map(country2=>{[country2.name.common,country2.flag,country2.area,country2.capital,country2.languages]})
+         const arr2 = arr.map(country2=>country2.name.common)
         console.log('array of countries',arr2) 
         const arr3 = array.splice(0);  // Source: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice
         setArray(arr3)
         setArray(array.concat(arr2))
        
        console.log('array' ,array) 
+       
       }) }, [])  
   //https://fullstackopen.com/osa2/palvelimella_olevan_datan_hakeminen
   useEffect(() => {    
     console.log('effect') 
-  if (country) {   
-
-    
+  if (country && hakuarray.some((item) => {if (item.toLowerCase() === country.toLowerCase()) {
+    return true;
+  } return false;} )) {   
+   //Source:  https://bobbyhadz.com/blog/react-check-if-element-exists-in-array
 
     axios
       .get(`https://studies.cs.helsinki.fi/restcountries/api/name/${country}`)
@@ -65,7 +69,6 @@ useEffect(() => {
       
      
 
-      //capital palauttaa urlissa Object object eika vaadittua stringia
       axios
       .get(`http://api.openweathermap.org/data/2.5/weather?q=${capital[0]}&units=metric&APPID=${api_key}`)  //Source https://stackoverflow.com/questions/32022699/how-to-use-openweathermap-api-for-javascript
       .then(response => {    
@@ -75,6 +78,7 @@ useEffect(() => {
         console.log('weather wind',response.data.wind.speed) 
         console.log('temperature',response.data.main.temp) 
         console.log('icon',response.data.weather[0].icon) 
+        console.log('api key',api_key) 
       })
       //https://stackoverflow.com/questions/44177417/how-to-display-openweathermap-weather-icon
       //https://stackoverflow.com/questions/37759473/temperature-conversion-with-openweathermap-api
@@ -89,7 +93,7 @@ useEffect(() => {
            
       if(event.target.value=== '' )
       console.log('OLEOLE') 
-      setCountry(event.target.value)
+      setCountry(event.target.value)// Onko ylimaarainen
       console.log('hakuarray ',hakuarray) 
       console.log('hakuarray length ',hakuarray.length) 
       console.log('hakuarray.at(0) ',hakuarray.at(0)) 
@@ -146,7 +150,10 @@ useEffect(() => {
     {Object.keys(capital).map((key, i) => (
     <p key={i}>
       {capital[key]}
-    </p>))}
+    </p>))
+    
+    
+    }
   <h4>Area </h4>
   
       {area}
