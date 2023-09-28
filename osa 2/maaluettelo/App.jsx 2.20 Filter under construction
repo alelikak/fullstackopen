@@ -1,4 +1,4 @@
-VITE_KEY=ee3d53d6d52a05cb2fb2824cd6e42eac npm run dev
+ //VITE_KEY=ee3d53d6d52a05cb2fb2824cd6e42eac npm run dev
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 
@@ -9,8 +9,6 @@ console.log(api_key)
 
 
 const App = () => {
-  
-
 
 const [value, setValue] = useState('')
 const [flag, setFlag] = useState()
@@ -26,15 +24,10 @@ const [hakuarray, setHakuarray] = useState([])
 const [icon, setIcon] = useState('10n')
 
 
- 
 
-  //https://fullstackopen.com/osa2/palvelimella_olevan_datan_hakeminen
-  useEffect(() => {    
-    console.log('effect') 
-  if (country) {   
-  
-
-    axios
+//https://stackoverflow.com/questions/54002792/in-general-is-it-better-to-use-one-or-many-useeffect-hooks-in-a-single-component#54004148
+useEffect(() => {    
+  axios
       .get(`https://studies.cs.helsinki.fi/restcountries/api/all`)
       .then(response => {
         console.log('response.data[0].name.common',response.data[0].name.common) 
@@ -46,10 +39,14 @@ const [icon, setIcon] = useState('10n')
         setArray(array.concat(arr2))
        
        console.log('array' ,array) 
-      })
+      }) }, [])  
+  //https://fullstackopen.com/osa2/palvelimella_olevan_datan_hakeminen
+  useEffect(() => {    
+    console.log('effect') 
+  if (country) {   
 
+    
 
-      
     axios
       .get(`https://studies.cs.helsinki.fi/restcountries/api/name/${country}`)
       .then(response => {
@@ -57,9 +54,9 @@ const [icon, setIcon] = useState('10n')
         setArea(response.data.area)
         setCapital(response.data.capital)
         setLanguages(response.data.languages)
-        
-
         console.log('capital AXIOSin getissa ',capital) 
+        console.log('capital AXIOSin getissa ',JSON.stringify(capital, null, 2)) 
+        
         console.log('languages AXIOSin getissa',languages) 
         
       
@@ -82,16 +79,10 @@ const [icon, setIcon] = useState('10n')
       //https://stackoverflow.com/questions/44177417/how-to-display-openweathermap-weather-icon
       //https://stackoverflow.com/questions/37759473/temperature-conversion-with-openweathermap-api
 
-  axios.get('http://localhost:3001/persons').then(response => {
-    console.log('promise fulfilled')        
-  setPersons(response.data)      })  }}, [country])  
+   }}, [country])  
  
-
-
-
   //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes
    //https://stackoverflow.com/questions/48979908/react-filter-function-case-insensitive
-  
   
     const handleChange = (event) => {
       setValue(event.target.value)
@@ -115,10 +106,7 @@ const [icon, setIcon] = useState('10n')
     
         }
         
-      
-
-      
-
+    
       //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes
       
 
@@ -172,8 +160,6 @@ const [icon, setIcon] = useState('10n')
     
     <h4>Flag </h4>
       {flag}
-      
-     
       <h2>Weather in {capital[0]} </h2>  
       {console.log('capital[0]',capital[0]) }
       <p>temperature  {temperature} Celsius</p>
@@ -186,11 +172,7 @@ src={`http://openweathermap.org/img/wn/${icon}@2x.png`}
 alt="">
 </img>
 </div>
-
       <p> wind {wind} ms </p>
-     
-      
-  
   </div>
     :
     ((hakuarray.length > 10) ?
@@ -211,14 +193,9 @@ alt="">
     </div>
       )))}
         </div>
-        
         // Source: https://stackoverflow.com/questions/42475681/using-openweather-json-api-how-to-fetch-the-temperature
         // Source: https://stackoverflow.com/questions/67368432/how-to-map-json-data-in-react-js
         // Source: https://stackoverflow.com/questions/50229792/adding-a-new-line-in-a-jsx-string-inside-a-paragraph-react
-        
-       
-        
-
     
   )
 
