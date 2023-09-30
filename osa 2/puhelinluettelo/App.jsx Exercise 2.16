@@ -47,10 +47,7 @@ const Persons = (props) => {
 <div>{props.personsToShow.map(person => <li className='person' key={person.name}>  <p>{person.name}{" "} {person.number}{" "} <button onClick={() => {if(window.confirm(`Delete ${person.name} ?`)){axios.delete(`${baseUrl}/${person.id}`).then(response => {})
     .catch(alert => {setAlertMessage( `Deleted '${person.name}' `)       
     setTimeout(() => {setAlertMessage(null)}, 5000)})
-
-
-
-
+    
 
 
 };}}>delete</button></p> </li>)} </div>
@@ -63,14 +60,14 @@ const Persons = (props) => {
 
 const App = () => {
   const [alertMessage, setAlertMessage] = useState(null)
-  const [persons, setPersons] = useState([  ])
-
+  const [persons, setPersons] = useState([])
+  
   const [newFilter, setNewFilter] = useState('')
   const [newName, setNewName] = useState('')
   const [newNote, setNewNote] = useState(    'a new note...'  ) 
   const [newNumber, setNewNumber] = useState(    ''  ) 
   const [showAll, setShowAll] = useState(true)
-
+  
   const deletePerson = (event) => {
      event.preventDefault()
     console.log('button id',props.id)
@@ -129,7 +126,8 @@ const App = () => {
        .update(note.id, newObject).then(returnedNote => {
          setPersons(persons.map(person => person.id !== id ? person : returnedNote))
        }).catch(alert => {setAlertMessage( `Updated '${newNote}' `)       
-       setTimeout(() => {setAlertMessage(null)}, 5000)})
+       setTimeout(() => {setAlertMessage(null)}, 5000)
+       console.log('Update alert toimii')})
        //Source https://fullstackopen.com/osa2/tyylien_lisaaminen_react_sovellukseen
        setNewNote('')
        setNewNumber('')
@@ -142,13 +140,15 @@ const App = () => {
   {
     console.log('Create new name',personObject,'persons.length ', persons.length)
     setPersons(persons.concat(personObject))
-    setNewNote('')
-    setNewNumber('')
+    
 
 
 
-       noteService.create(personObject).then(response => {}).catch(alert => {setAlertMessage( `Added '${personObject.name}' `)       
-         setTimeout(() => {setAlertMessage(null)}, 5000)})
+       noteService.create(personObject).then(response => {}).catch(alert => {setAlertMessage( `Added '${newNote}' `)       
+       setTimeout(() => {setAlertMessage(null)}, 5000)
+       console.log('Create alert toimii')})
+       setNewNote('')
+       setNewNumber('')
 
 
 
@@ -170,9 +170,8 @@ const App = () => {
   useEffect(() => {    console.log('effect')    
   noteService.getAll().then(response => {setPersons(response.data)})
 
-  axios.get('http://localhost:3001/persons').then(response => {
-    console.log('promise fulfilled')        
-  setPersons(response.data)      })  }, [newName])  
+   }, [])  
+  //BUGI: Renderoidyn listan paivitys toimii heti nimea lisattaessa. Poistettaessa listasta nimen, nimi ei poistu listasta heti. klo 11.58 Toni Lelikakis 30.9.2023
   console.log('render', persons.length, 'notes')
 
 
