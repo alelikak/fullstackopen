@@ -14,7 +14,18 @@ const Notification = ({ message }) => {
     
   )
 }
+const Error = ({ message }) => {
+  if (message === null) {
+    return null
+  }
 
+  return (
+    <div className="error">
+      {message}
+    </div>
+    
+  )
+}
 
 const Filter = (props) => {
   return (
@@ -56,6 +67,7 @@ const Persons = ({deletePerson,personsToShow}) => {
 
 const App = () => {
   const [alertMessage, setAlertMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
   const [persons, setPersons] = useState([])
   
   const [newFilter, setNewFilter] = useState('')
@@ -129,9 +141,9 @@ const App = () => {
           setTimeout(() => {setAlertMessage(null)}, 5000)
         }
         else{
-          setAlertMessage( `Information of '${newNote}' has already been removed from server`) 
+          setErrorMessage( `Information of '${newNote}' has already been removed from server`) 
               
-       setTimeout(() => {setAlertMessage(null)}, 5000)
+       setTimeout(() => {setErrorMessage(null)}, 5000)
       }
        console.log('Update alert toimii 2')})
         //Source https://fullstackopen.com/osa2/tyylien_lisaaminen_react_sovellukseen
@@ -167,7 +179,7 @@ const App = () => {
   useEffect(() => {    console.log('effect')    
   noteService.getAll().then(response => {setPersons(response.data)})
 
-   }, [])  
+   }, [persons])  
   //Kun ylla olevaan taulukkoon laittaa muuttujan persons, niin renderointi sivuilla tapahtuu reaaliaikaisesti, muutem vain lisaamisen on reaaliaikaista, poistamisessa ja paivittamisessa pitaa painaa selaimen paivitysnappia
    console.log('render', persons.length, 'notes')
 
@@ -193,8 +205,7 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
       <Notification message={alertMessage} />
-      
-      <Filter filter= {newFilter} eventhandler= {handleFilterChange}/>
+      <Error message= {errorMessage}/>
 
 
       <h3>Add a new</h3>
