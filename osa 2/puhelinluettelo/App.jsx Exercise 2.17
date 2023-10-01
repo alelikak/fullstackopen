@@ -82,7 +82,7 @@ const App = () => {
 
      if (window.confirm(`Delete ${event.target.name} ?`)) {
 
-      axios.delete(`http://localhost:3001/persons/${event.target.id}`).then(response => {setAlertMessage( `Deleted '${event.target.name}' `)       
+      noteService.poista(event.target.id).then(response => {setAlertMessage( `Deleted '${event.target.name}' `)       
       setTimeout(() => {setAlertMessage(null)}, 5000)}).catch(alert => {})
       console.log('deletePerson eventtia kutsuttiin')
     }
