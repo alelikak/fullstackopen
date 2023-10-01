@@ -11,8 +11,10 @@ const Notification = ({ message }) => {
     <div className="alert">
       {message}
     </div>
+    
   )
 }
+
 
 const Filter = (props) => {
   return (
@@ -38,19 +40,13 @@ const PersonForm = (props) => {
 )
 }
 
-const Persons = (props) => {
+const Persons = ({deletePerson,personsToShow}) => {
   const baseUrl = 'http://localhost:3001/persons'
   return (
 
 
 
-<div>{props.personsToShow.map(person => <li className='person' key={person.name}>  <p>{person.name}{" "} {person.number}{" "} <button onClick={() => {if(window.confirm(`Delete ${person.name} ?`)){axios.delete(`${baseUrl}/${person.id}`).then(response => {})
-    .catch(alert => {setAlertMessage( `Deleted '${person.name}' `)       
-    setTimeout(() => {setAlertMessage(null)}, 5000)})
-    
-
-
-};}}>delete</button></p> </li>)} </div>
+<div>{personsToShow.map(person => <li className='person' key={person.name}>  <p>{person.name}{" "} {person.number}{" "} <button name={person.name} id={person.id}  onClick={deletePerson}>delete</button></p> </li>)} </div>
 //Source https://stackoverflow.com/questions/52034868/confirm-window-in-react
 )
 }
@@ -70,12 +66,12 @@ const App = () => {
   
   const deletePerson = (event) => {
      event.preventDefault()
-    console.log('button id',props.id)
+    console.log('button id',event.target.id)
 
-     if (window.confirm('Delete', this.props.name, '?')) {
+     if (window.confirm(`Delete ${event.target.name} ?`)) {
 
-      noteService.poista(this.props.id).then(response => {}).catch(error => {setAlertMessage( `Deleted '${this.props.name}' `)       
-      setTimeout(() => {setAlertMessage(null)}, 9000)})
+      axios.delete(`http://localhost:3001/persons/${event.target.id}`).then(response => {setAlertMessage( `Deleted '${event.target.name}' `)       
+      setTimeout(() => {setAlertMessage(null)}, 5000)}).catch(alert => {})
       console.log('deletePerson eventtia kutsuttiin')
     }
 
@@ -125,10 +121,20 @@ const App = () => {
     noteService
        .update(note.id, newObject).then(returnedNote => {
          setPersons(persons.map(person => person.id !== id ? person : returnedNote))
-       }).catch(alert => {setAlertMessage( `Updated '${newNote}' `)       
+         console.log('Update alert toimii 1')
+         
+       }).catch(alert => {   //https://stackoverflow.com/questions/68970650/how-to-show-success-or-error-message-based-on-the-response-of-the-api-in-react-j
+        if(alert.message!=='Request failed with status code 404'){
+          setAlertMessage( `Updated '${newNote}' `) 
+          setTimeout(() => {setAlertMessage(null)}, 5000)
+        }
+        else{
+          setAlertMessage( `Information of '${newNote}' has already been removed from server`) 
+              
        setTimeout(() => {setAlertMessage(null)}, 5000)
-       console.log('Update alert toimii')})
-       //Source https://fullstackopen.com/osa2/tyylien_lisaaminen_react_sovellukseen
+      }
+       console.log('Update alert toimii 2')})
+        //Source https://fullstackopen.com/osa2/tyylien_lisaaminen_react_sovellukseen
        setNewNote('')
        setNewNumber('')
       }else
@@ -140,19 +146,10 @@ const App = () => {
   {
     console.log('Create new name',personObject,'persons.length ', persons.length)
     setPersons(persons.concat(personObject))
-    
 
-
-
-       noteService.create(personObject).then(response => {}).catch(alert => {setAlertMessage( `Added '${newNote}' `)       
-       setTimeout(() => {setAlertMessage(null)}, 5000)
-       console.log('Create alert toimii')})
-       setNewNote('')
-       setNewNumber('')
-
-
-
-
+    noteService.create(personObject).then(response => {setAlertMessage( `Added '${newNote}' `);  setTimeout(() => {setAlertMessage(null)}, 5000)  })
+    setNewNote('')
+    setNewNumber('')
   }
 
 
@@ -171,8 +168,8 @@ const App = () => {
   noteService.getAll().then(response => {setPersons(response.data)})
 
    }, [])  
-  //BUGI: Renderoidyn listan paivitys toimii heti nimea lisattaessa. Poistettaessa listasta nimen, nimi ei poistu listasta heti. klo 11.58 Toni Lelikakis 30.9.2023
-  console.log('render', persons.length, 'notes')
+  //Kun ylla olevaan taulukkoon laittaa muuttujan persons, niin renderointi sivuilla tapahtuu reaaliaikaisesti, muutem vain lisaamisen on reaaliaikaista, poistamisessa ja paivittamisessa pitaa painaa selaimen paivitysnappia
+   console.log('render', persons.length, 'notes')
 
 
 
@@ -196,6 +193,7 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
       <Notification message={alertMessage} />
+      
       <Filter filter= {newFilter} eventhandler= {handleFilterChange}/>
 
 
